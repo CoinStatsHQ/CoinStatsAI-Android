@@ -4,4 +4,4 @@ before_install:
   - ./scripts/prepareJitpackEnvironment.sh
 install:
   - FILE="-Dfile=coinstats_ai-release.aar"
-  - mvn install:install-file $FILE -DgroupId=coinstats.ai -DartifactId=CoinStatsAI-Android -Dversion=1.0.26 -Dpackaging=aar -DgeneratePom=true
+  - mvn install:install-file $FILE -DgroupId=coinstats.ai -DartifactId=CoinStatsAI-Android -Dversion=1.0.27 -Dpackaging=aar -DgeneratePom=true
