@@ -19,11 +19,9 @@ Add this library to your project's `build.gradle`:
 
 ```gradle
 dependencies {
-    implementation 'coinstats.ai:CoinStatsAI-Android:1.0.44' // See gradle.properties for latest version
+    implementation 'coinstats.ai:CoinStatsAI-Android:1.0.44'
 }
 ```
-
-For the latest version, check `gradle.properties` in the project root.
 
 ## Setup
 
@@ -71,22 +69,83 @@ If you already have a FileProvider configured, simply add the cache-path entries
 
 ## Usage
 
-### Opening the AI View
+### Public API
+
+| Method | Description |
+|--------|-------------|
+| `initialize(apiKey, isDebugMode, isDarkTheme)` | Configure the SDK at app startup |
+| `create(activity, token, margins, ...)` | Set up the floating AI button in an Activity |
+| `isEnabled` | Property to show/hide the floating AI button |
+| `prepare(token)` | Update the authentication token |
+| `sendWindowContext(context, metadata)` | Send contextual information to the AI |
+| `open(activity, queryParams)` | Open the AI WebView programmatically |
+| `setTheme(activity, isDark)` | Update the theme at runtime |
+| `syncUserData()` | Sync user data with the WebView |
+| `dismissQuestionsIfShown()` | Dismiss the questions panel if visible |
+| `disableBlur(activity)` | Disable blur effect before fragment transactions |
+| `enableBlur(activity)` | Re-enable blur effect after fragment transactions |
+
+### Initialize
+
+Call once at app startup (e.g., in your Application class):
+
+```kotlin
+CoinStatsAICore.initialize(
+    apiKey = "your-api-key",
+    isDebugMode = BuildConfig.DEBUG,
+    isDarkTheme = true
+)
+```
+
+### Create
+
+Set up the floating AI button in your Activity:
+
+```kotlin
+CoinStatsAICore.create(
+    activity = this,
+    token = userAuthToken,
+    margins = BoundsMargins(left = 16f, top = 100f, right = 16f, bottom = 100f),
+    hideListener = { /* Called when user hides the button */ },
+    aiClickListener = { /* Called when AI button is clicked */ },
+    aiCloseListener = { /* Called when AI WebView is closed */ },
+    deepLinkOpenListener = { uri -> LinkHandling.BROWSER }
+)
+```
+
+### isEnabled
+
+Enable or disable the floating AI button:
+
+```kotlin
+CoinStatsAICore.isEnabled = true  // Show
+CoinStatsAICore.isEnabled = false // Hide
+```
+
+### prepare
+
+Update the authentication token (e.g., after login/logout):
+
+```kotlin
+CoinStatsAICore.prepare(newToken)
+```
+
+### sendWindowContext
+
+Send contextual information to the AI:
+
+```kotlin
+CoinStatsAICore.sendWindowContext(context = "coin", metadata = """{"coinId": "bitcoin"}""")
+```
+
+### open
+
+Open the AI WebView programmatically:
 
 ```kotlin
 CoinStatsAICore.open(activity)
+CoinStatsAICore.open(activity, mapOf("source" to "deeplink"))
 ```
-
-### Customizing Questions
-
-Questions are displayed as a horizontal pager with mode badges. The library automatically handles:
-- Question loading and display
-- Mode badge rendering (with theme support)
-- Badge updates as user scrolls through questions
-
-### Theme Support
-
-The library respects your app's theme (light/dark mode) and automatically applies appropriate colors to all UI elements.
 
 ## Download Functionality
 
@@ -96,30 +155,6 @@ The library automatically handles file downloads when users interact with downlo
 2. **Blob URLs**: Handled natively by the browser using anchor tag downloads
 3. **Progress**: Visual progress overlay during download
 4. **Cleanup**: Files are auto-deleted 1 minute after sharing
-
-## Troubleshooting
-
-### Downloads Not Working
-
-1. Verify FileProvider is declared in your manifest
-2. Check that file_provider_paths.xml exists and contains cache paths
-3. Ensure INTERNET permission is granted
-4. Verify sufficient storage space is available
-
-### "Couldn't find meta-data for provider..."
-
-This error indicates FileProvider configuration issue:
-1. Verify `android:authorities` matches your package name
-2. Confirm `@xml/file_provider_paths` points to correct file
-3. Ensure XML file exists and is valid
-
-## Dependencies
-
-- `androidx.core:core` - FileProvider
-- `com.squareup.okhttp3:okhttp` - HTTP client for downloads
-- `androidx.webkit:webkit` - WebView enhancements
-- `androidx.recyclerview:recyclerview` - Question pager
-- Kotlin coroutines
 
 ## License
 
