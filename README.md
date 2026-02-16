@@ -19,7 +19,7 @@ Add this library to your project's `build.gradle`:
 
 ```gradle
 dependencies {
-    implementation 'coinstats.ai:CoinStatsAI-Android:1.0.44'
+    implementation 'coinstats.ai:CoinStatsAI-Android:1.0.45'
 }
 ```
 
